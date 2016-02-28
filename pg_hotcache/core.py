@@ -1,3 +1,5 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import getpass
 import psycopg2
 import psycopg2.extras
@@ -9,24 +11,24 @@ from re import compile
 
 def load_cache(args):
     if not args.host:
-        conn_string = "dbname='{}' user='{}' password='{}'".format(
+        conn_string = "dbname='{0}' user='{1}' password='{2}'".format(
             args.dbname, args.username, args.password
         )
     else:
-        conn_string = "host='{}' port='{}' dbname='{}' user='{}' password='{}'".format(
+        conn_string = "host='{0}' port='{1}' dbname='{2}' user='{3}' password='{4}'".format(
             args.host, args.port, args.dbname, args.username, args.password
         )
     try:
         conn = psycopg2.connect(conn_string)
     except psycopg2.Error as e:
         if "password authentication failed" in str(e):
-            password = getpass.getpass("Password for user {}: ".format(args.username))
+            password = getpass.getpass("Password for user {0}: ".format(args.username))
             if not args.host:
-                conn_string = "dbname='{}' user='{}' password='{}'".format(
+                conn_string = "dbname='{0}' user='{1}' password='{2}'".format(
                     args.dbname, args.username, password
                 )
             else:
-                conn_string = "host='{}' port='{}' dbname='{}' user='{}' password='{}'".format(
+                conn_string = "host='{0}' port='{1}' dbname='{2}' user='{3}' password='{4}'".format(
                     args.host, args.port, args.dbname, args.username, password
                 )
             try:
@@ -44,7 +46,8 @@ def load_cache(args):
         print(e)
     rows = cur.fetchall()
     version = rows[0][0].split()[1].split('.')
-    support_text = "Minimal supported PostgreSQL version is 9.4.\nYour PostgreSQL version is {}.{}.{}".format(*version)
+    support_text = "Minimal supported PostgreSQL version is 9.4. " \
+                   "Your PostgreSQL version is {0}.{1}.{2}".format(*version)
     if version[0] == '9':
         if int(version[1]) < 4:
             print(support_text)
@@ -58,7 +61,7 @@ def load_cache(args):
         'GB': 3,
         'TB': 4
     }
-    pg_units = compile(r'([\d])+({}|{}|{}|{})'.format(*B.keys()))
+    pg_units = compile(r'([\d])+({0}|{1}|{2}|{3})'.format(*B.keys()))
     try:
         cur.execute(
             """
@@ -101,7 +104,7 @@ def load_cache(args):
         try:
             cur.execute(
                 """
-                select pg_prewarm('{}')
+                select pg_prewarm('{0}')
                 """.format(table)
             )
         except psycopg2.Error as e:
@@ -113,7 +116,7 @@ def main():
     p = ArgumentParser(
         description='Loading into cache from said PostgreSQL database the tables, which are most frequently scanned.\n'
                     'Limiter for loading into cache is the value of "effective_cache_size".',
-        epilog='version = {}'.format(__version__),
+        epilog='version = {0}'.format(__version__),
         add_help=False,
     )
     p.add_argument('-?', '--help', action="help",
@@ -123,7 +126,7 @@ def main():
     p.add_argument('-p', '--port', action='store', default=5432, type=int,
                    help='database server port (default: "5432")')
     p.add_argument('-U', '--username', action='store', default=getpass.getuser(),
-                   help='database user name (default: "{}")'.format(getpass.getuser()))
+                   help='database user name (default: "{0}")'.format(getpass.getuser()))
     p.add_argument('-W', '--password', action='store',
                    help='force password prompt (should happen automatically)')
     p.add_argument('-d', '--dbname', action='store', required=True,
