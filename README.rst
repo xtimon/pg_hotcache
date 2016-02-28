@@ -9,7 +9,7 @@ Limiter for loading into cache is the value of "effective\_cache\_size".
 It makes sense to use after restarting the server!
 
 Before using, you need to connect to the database as superuser and add
-the extension 'pg\_prewarm' (added to Postgres since version 9.4):
+the extension 'pg\_prewarm' (added to PostgreSQL since version 9.4):
 
 ::
 
