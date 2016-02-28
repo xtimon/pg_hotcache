@@ -6,6 +6,10 @@ Limiter for loading into cache is the value of "effective_cache_size".
 
 It makes sense to use after restarting the server!
 
+Before using, you need to connect to the database as superuser and add the extension "pg_prewarp" (added to Postgres since version 9.4):
+
+    create extension pg_prewarm;
+
 Installation:
 
     pip install pg_hotcache
