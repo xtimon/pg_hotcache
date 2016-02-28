@@ -2,6 +2,7 @@ import getpass
 import psycopg2
 import psycopg2.extras
 import sys
+from . import __version__
 from argparse import ArgumentParser
 from re import compile
 
@@ -79,7 +80,7 @@ def load_cache(args):
             """
             SELECT relname, pg_relation_size(relid)
             FROM pg_stat_all_tables
-            WHERE relname not like 'pg_%'
+            WHERE relname not like 'pg_%' and relname not like 'sql_%'
             ORDER BY COALESCE(seq_scan, 0)+COALESCE(idx_scan, 0) DESC;
             """
         )
@@ -90,7 +91,7 @@ def load_cache(args):
     tables = list()
     i = 0
     summary_size = 0
-    while summary_size < effective_cache_size:
+    while summary_size < effective_cache_size and i < len(rows):
         summary_size += rows[i][1]
         tables.append(rows[i][0])
         i += 1
@@ -105,12 +106,14 @@ def load_cache(args):
             )
         except psycopg2.Error as e:
             print(e)
+            sys.exit(1)
 
 
 def main():
     p = ArgumentParser(
-        description='description',
-        epilog='epilog',
+        description='Loading into cache from said PostgreSQL database the tables, which are most frequently scanned.\n'
+                    'Limiter for loading into cache is the value of "effective_cache_size".',
+        epilog='version = {}'.format(__version__),
         add_help=False,
     )
     p.add_argument('-?', '--help', action="help",
@@ -123,8 +126,8 @@ def main():
                    help='database user name (default: "{}")'.format(getpass.getuser()))
     p.add_argument('-W', '--password', action='store',
                    help='force password prompt (should happen automatically)')
-    p.add_argument('-d', '--dbname', action='store', default=getpass.getuser(),
-                   help='database name to connect to (default: "{}")'.format(getpass.getuser()))
+    p.add_argument('-d', '--dbname', action='store', required=True,
+                   help='database name for caching')
     args = p.parse_args()
     load_cache(args)
 
