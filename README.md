@@ -4,6 +4,8 @@ Loading into cache from said PostgreSQL database the tables, which are most freq
 
 Limiter for loading into cache is the value of "effective_cache_size".
 
+It makes sense to use after restarting the server!
+
 Installation:
 
     pip install pg_hotcache

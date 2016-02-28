@@ -1,11 +1,12 @@
 pg\_hotcache
 ============
 
-Loading into cache from said PostgreSQL database the tables, which are most frequently scanned.
------------------------------------------------------------------------------------------------
+Loading into cache from said PostgreSQL database the tables, which are
+most frequently scanned.
 
 Limiter for loading into cache is the value of "effective\_cache\_size".
-------------------------------------------------------------------------
+
+It makes sense to use after restarting the server!
 
 Installation:
 
