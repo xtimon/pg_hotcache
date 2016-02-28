@@ -99,8 +99,11 @@ def load_cache(args):
         tables.append(rows[i][0])
         i += 1
     tables.pop()
+    if not tables:
+        print('or a very small parameter "effective_cache_size", or very large tables in the database')
+        sys.exit()
     for table in tables:
-        print("load table {} into cache".format(table))
+        print("load table {0} into cache".format(table))
         try:
             cur.execute(
                 """
