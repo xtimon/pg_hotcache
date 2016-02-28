@@ -14,6 +14,14 @@ Installation:
 
     pip install pg_hotcache
 
+Alternative installation:
+
+::
+
+    git clone https://github.com/xtimon/pg_hotcache.git
+    cd pg_hotcache
+    python setup.py install
+
 usage:
 
 ::
