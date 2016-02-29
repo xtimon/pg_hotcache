@@ -44,6 +44,7 @@ def load_cache(args):
         cur.execute("""SELECT version()""")
     except psycopg2.Error as e:
         print(e)
+        sys.exit(1)
     rows = cur.fetchall()
     version = rows[0][0].split()[1].split('.')
     support_text = "Minimal supported PostgreSQL version is 9.4. " \
