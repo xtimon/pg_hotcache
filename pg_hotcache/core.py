@@ -100,7 +100,7 @@ def load_cache(args):
         i += 1
     tables.pop()
     if not tables:
-        print('or a very small parameter "effective_cache_size", or very large tables in the database')
+        print('either too small parameter "effective_cache_size" or too large tables')
         sys.exit()
     for table in tables:
         print("load table {0} into cache".format(table))
