@@ -27,6 +27,7 @@ setup(
             ['pg_hotcache = pg_hotcache.core:main']
         },
     classifiers=[
+        'Environment :: Console',
         'Topic :: Database',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.6',

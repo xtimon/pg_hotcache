@@ -92,6 +92,7 @@ def load_cache(args):
         print(e)
         sys.exit(1)
     rows = cur.fetchall()
+    db_tables_count = len(rows)
     tables = list()
     i = 0
     summary_size = 0
@@ -99,7 +100,9 @@ def load_cache(args):
         summary_size += rows[i][1]
         tables.append(rows[i][0])
         i += 1
-    tables.pop()
+    if summary_size > effective_cache_size:
+        tables.pop()
+        i -= 1
     if not tables:
         print('either too small parameter "effective_cache_size" or too large tables')
         sys.exit()
@@ -114,6 +117,7 @@ def load_cache(args):
         except psycopg2.Error as e:
             print(e)
             sys.exit(1)
+    print("{0} of the {1} tables are loaded into cache".format(i, db_tables_count))
 
 
 def main():
