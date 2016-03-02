@@ -99,7 +99,7 @@ def load_cache(args):
     tables = list()
     i = 0
     summary_size = 0
-    while summary_size < effective_cache_size and i < len(rows):
+    while summary_size < effective_cache_size and i < db_tables_count:
         summary_size += rows[i][1]
         tables.append(rows[i][0])
         i += 1
