@@ -41,12 +41,12 @@ def load_cache(args):
             sys.exit(1)
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
-        cur.execute("""SELECT version()""")
+        cur.execute("""show server_version""")
     except psycopg2.Error as e:
         print(e)
         sys.exit(1)
     rows = cur.fetchall()
-    version = rows[0][0].split()[1].split('.')
+    version = rows[0][0].split('.')
     support_text = "Minimal supported PostgreSQL version is 9.4. " \
                    "Your PostgreSQL version is {0}.{1}.{2}".format(*version)
     if version[0] == '9':
@@ -93,6 +93,9 @@ def load_cache(args):
         sys.exit(1)
     rows = cur.fetchall()
     db_tables_count = len(rows)
+    if db_tables_count == 0:
+        print("No tables in the database {0}".format(args.dbname))
+        sys.exit()
     tables = list()
     i = 0
     summary_size = 0
@@ -104,7 +107,7 @@ def load_cache(args):
         tables.pop()
         i -= 1
     if not tables:
-        print('either too small parameter "effective_cache_size" or too large tables')
+        print('Either too small parameter "effective_cache_size" or too large tables')
         sys.exit()
     for table in tables:
         print("load table {0} into cache".format(table))
@@ -115,7 +118,16 @@ def load_cache(args):
                 """.format(table)
             )
         except psycopg2.Error as e:
-            print(e)
+            if "No function matches the given name and argument types" in str(e):
+                print(
+"""
+Error: In the database is not installed the extension pg_prewarm.
+To add an extension pg_prewarm need to install the package postgresql-contrib.
+After you need to connect to the database under the superuser and run the command:
+create extension pg_prewarm;"""
+                )
+            else:
+                print(e)
             sys.exit(1)
     print("{0} of the {1} tables are loaded into cache".format(i, db_tables_count))
 
