@@ -31,7 +31,7 @@ optional arguments:
                           "local socket")
     -p PORT, --port PORT  database server port (default: "5432")
     -U USERNAME, --username USERNAME
-                          database user name (default: "bars")
+                          database user name (default: "unix user")
     -W PASSWORD, --password PASSWORD
                           force password prompt (should happen automatically)
     -d DBNAME, --dbname DBNAME
